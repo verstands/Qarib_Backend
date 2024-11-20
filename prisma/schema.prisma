@@ -1,0 +1,128 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Agents {
+  id            String          @id @default(cuid())
+  noms          String
+  password      String
+  telephone     String
+  statut        String
+  id_role       String
+  id_ville      String
+  email         String          @unique
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @updatedAt
+  Images        Images[]
+  ServiceUser   ServiceUsers[]
+  Logdata       Logdata[]
+  Probleme      Problemes[]
+  Evaluations   Evaluations[]
+  Notifications Notifications[]
+
+  ville Villes @relation(fields: [id_ville], references: [id])
+  role  Roles  @relation(fields: [id_role], references: [id])
+}
+
+model Roles {
+  id         String   @id @default(cuid())
+  nom        String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Agents     Agents[]
+}
+
+model Images {
+  id         String   @id @default(cuid())
+  profil     String
+  carte      String
+  id_user    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user       Agents   @relation(fields: [id_user], references: [id])
+}
+
+model Services {
+  id          String         @id @default(cuid())
+  titre       String
+  description String
+  icon        String
+  created_at  DateTime       @default(now())
+  updated_at  DateTime       @updatedAt
+  ServiceUser ServiceUsers[]
+}
+
+model ServiceUsers {
+  id         String   @id @default(cuid())
+  id_user    String
+  id_service String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user    Agents   @relation(fields: [id_user], references: [id])
+  service Services @relation(fields: [id_service], references: [id])
+}
+
+model Villes {
+  id         String   @id @default(cuid())
+  nom        String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Agents     Agents[]
+}
+
+model Logdata {
+  id             String   @id @default(cuid())
+  action         String
+  id_user        String
+  processingTime Int
+  ip             String?
+  os             String?
+  browser        String?
+  isp            String?
+  pays           String?
+  latitude       Float?
+  longitude      Float?
+  createdAt      DateTime @default(now())
+
+  user Agents @relation(fields: [id_user], references: [id])
+}
+
+model Problemes {
+  id         String   @id @default(cuid())
+  id_user    String
+  message    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user       Agents   @relation(fields: [id_user], references: [id])
+}
+
+model Evaluations {
+  id         String   @id @default(cuid())
+  id_user    String
+  nombrer    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user       Agents   @relation(fields: [id_user], references: [id])
+}
+
+model Notifications {
+  id         String   @id @default(cuid())
+  id_recever String
+  id_sender  String
+  message    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user       Agents   @relation(fields: [id_sender], references: [id])
+}
