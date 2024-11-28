@@ -17,6 +17,10 @@ export class AuthService {
       where: {
         email: authBody.email,
       },
+      include : {
+        ville : true,
+        role : true
+      }
     });
 
     if (!existeEmail) {

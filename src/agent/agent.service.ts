@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AgentInterface } from 'src/dto/agent.dto';
 import { PrismaService } from 'src/prisma.service';
+import { hash, compare } from 'bcrypt';
 
 @Injectable()
 export class AgentService {
@@ -20,13 +21,6 @@ export class AgentService {
     const agent = await this.prismaservice.agents.findUnique({
       where: {
         id,
-      },
-      select: {
-        id: true,
-        nom: true,
-        prenom: true,
-        statut: true,
-        email: true,
       },
     });
     return { data: agent };
@@ -58,14 +52,29 @@ export class AgentService {
     return { message: 'Agent supprimé avec success ' };
   }
 
-  async getAgentsByFonctions(fonctionIds: number[] | string[]) {
-    const agents = await this.prismaservice.agents.findMany({
+  async create(dataall: AgentInterface) {
+    const existeEmail = await this.prismaservice.agents.findUnique({
       where: {
-        id_fonction: {
-          in: fonctionIds.map(String),
-        },  
+        email: dataall.email,
       },
     });
-    return { data: agents };
+    if (existeEmail) {
+      throw new HttpException("Email existe déjà !", HttpStatus.CONFLICT);
+    }
+    const hashedPassword = await this.hasPassword(dataall.password);
+    const createAgent = await this.prismaservice.agents.create({
+      data: {
+        ...dataall,
+        password: hashedPassword, 
+      },
+    });
+
+    return createAgent;
   }
+
+  private async hasPassword(password: string) {
+    const hashedPassword = await hash(password, 10);
+    return hashedPassword;
+  }
+
 }

@@ -12,7 +12,7 @@ import { AgentService } from './agent.service';
 import { AgentInterface } from 'src/dto/agent.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
-@UseGuards(JwtAuthGuard)
+//@UseGuards(JwtAuthGuard)
 @Controller('agent')
 export class AgentController {
   constructor(private readonly agentService: AgentService) {}
@@ -39,9 +39,9 @@ export class AgentController {
     return this.agentService.deleteAgent({ id });
   }
 
-  @Post('by-fonctions')
-  getAgentsByFonctions(@Body() body: { fonctionIds: string[] }) {
-    const { fonctionIds } = body;
-    return this.agentService.getAgentsByFonctions(fonctionIds);
+  @Post()
+  cretae(@Body() data: AgentInterface) {
+    return this.agentService.create(data);
   }
+
 }
