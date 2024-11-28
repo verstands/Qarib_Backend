@@ -21,6 +21,8 @@ model Agents {
   statut        String
   id_role       String
   id_ville      String
+  latitude      Float
+  longitude     Float
   email         String          @unique
   created_at    DateTime        @default(now())
   updated_at    DateTime        @updatedAt

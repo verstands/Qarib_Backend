@@ -2,10 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AgentInterface } from 'src/dto/agent.dto';
 import { PrismaService } from 'src/prisma.service';
 import { hash, compare } from 'bcrypt';
+import { UserGateway } from './gateway';
 
 @Injectable()
 export class AgentService {
-  constructor(private readonly prismaservice: PrismaService) {}
+  constructor(
+    private readonly prismaservice: PrismaService,
+    private readonly userGateway: UserGateway,
+  ) {}
 
   async getAgents() {
     const agents = await this.prismaservice.agents.findMany({
@@ -16,6 +20,32 @@ export class AgentService {
     });
     return { data: agents };
   }
+
+  
+
+  async getUsersPostion() {
+    const agents = await this.prismaservice.agents.findMany({
+      select: {
+        id: true,
+        noms: true,
+        latitude: true,
+        longitude: true,
+      },
+    });
+    return agents;
+  }
+
+  async updateUserPosition(userId: string, latitude: number, longitude: number) {
+    const updatedAgent = await this.prismaservice.agents.update({
+      where: { id: userId },
+      data: { latitude, longitude },
+    });
+    this.userGateway.emitUserPositionChange(userId, latitude, longitude);
+  
+    return updatedAgent;
+  }
+  
+  
 
   async getAgent({ id }: { id: string }) {
     const agent = await this.prismaservice.agents.findUnique({
