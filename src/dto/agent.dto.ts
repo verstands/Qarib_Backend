@@ -30,6 +30,16 @@ export class AgentInterface {
   id_role: string;
 
   @IsNotEmpty({
+    message: 'Le champ role est obligatoire',
+  })
+  latitude: number;
+
+  @IsNotEmpty({
+    message: 'Le champ role est obligatoire',
+  })
+  longitude: number;
+
+  @IsNotEmpty({
     message: 'Le champ ville est obligatoire',
   })
   id_ville: string;

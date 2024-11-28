@@ -95,7 +95,7 @@ export class AgentService {
     const createAgent = await this.prismaservice.agents.create({
       data: {
         ...dataall,
-        password: hashedPassword, 
+        password: hashedPassword,
       },
     });
 

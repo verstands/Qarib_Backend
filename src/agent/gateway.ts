@@ -1,25 +1,19 @@
 import { WebSocketGateway, SubscribeMessage, WebSocketServer } from '@nestjs/websockets';
-import { AgentService } from './agent.service'; 
 import { Server } from 'socket.io';
+import { UserGatewayInterface } from 'src/interface/usergatewayinterface';
 
-@WebSocketGateway({
-  cors: {
-    origin: '*', 
-  },
-})
-export class UserGateway {
+
+@WebSocketGateway()
+export class UserGateway implements UserGatewayInterface {
   @WebSocketServer()
-  private server: Server; 
-
-  constructor(private readonly agentService: AgentService) {} 
-
-  @SubscribeMessage('getUsers')
-  async handleUserUpdate(): Promise<void> {
-    const agents = await this.agentService.getUsersPostion(); 
-    this.server.emit('usersUpdate', agents);
-  }
+  private server: Server;
 
   emitUserPositionChange(userId: string, latitude: number, longitude: number): void {
     this.server.emit('userPositionUpdate', { userId, latitude, longitude });
+  }
+
+  @SubscribeMessage('getUsers')
+  handleUserUpdate(): void {
+    // Pas besoin d'accéder à AgentService ici
   }
 }

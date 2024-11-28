@@ -6,6 +6,15 @@ import { UserGateway } from './gateway';
 
 @Module({
   controllers: [AgentController],
-  providers: [AgentService, PrismaService, UserGateway],
+  providers: [
+    AgentService,
+    UserGateway,
+    PrismaService,
+    {
+      provide: 'UserGatewayInterface',
+      useExisting: UserGateway,
+    },
+  ],
+  exports: [AgentService],
 })
 export class AgentModule {}
