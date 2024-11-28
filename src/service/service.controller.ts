@@ -17,6 +17,18 @@ export class ServiceController {
         id,
       });
     }
+
+    @Get('servicebyuser/:id')
+    getServiceByUser(@Param('id') id: string) {
+      return this.allservice.getServiceByUser({
+        id,
+      });
+    }
+
+    @Get('servicebyuserAll/servicebyuserAll')
+    getServiceByUserAll(@Param('id') id: string) {
+      return this.allservice.getServiceByUserAll();
+    }
   
     @Put(':id')
     update(@Param('id') id: string, @Body() agentUpdate: ServicesDto) {

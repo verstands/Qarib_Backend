@@ -23,6 +23,29 @@ export class ServiceService {
       });
       return { data: getid };
     }
+
+    async getServiceByUser({ id }: { id: string }) {
+      const getid = await this.prismaservice.serviceUsers.findMany({
+        where: {
+          id_service : id
+        },
+        include : {
+          user : true,
+          service : true
+        }
+      });
+      return { data: getid };
+    }
+
+    async getServiceByUserAll() {
+      const getid = await this.prismaservice.serviceUsers.findMany({
+        include : {
+          user : true,
+          service : true
+        }
+      });
+      return { data: getid };
+    }
   
     async update({ id, ...agentUpdate }: { id: string } & ServicesDto) {
       const updatedAgent = await this.prismaservice.services.update({
