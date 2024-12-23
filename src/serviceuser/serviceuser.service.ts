@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { ServiceUsersDto } from 'src/dto/serviceuser.dto';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class ServiceuserService {
-    constructor(private readonly prismaservice: PrismaService) {}
+    constructor(
+      private readonly prismaservice: PrismaService,
+      private readonly jwtService: JwtService,
+  ) {}
 
     async getAll() {
       const getall = await this.prismaservice.serviceUsers.findMany({
@@ -13,6 +17,27 @@ export class ServiceuserService {
         },
       });
       return { data: getall };
+    }
+    async getAllUser(id : string) {
+      const getall = await this.prismaservice.serviceUsers.findMany({
+        orderBy : {
+          id : "desc"
+        },
+      });
+      return { data: getall };
+    }
+
+    async getCountAllService(id : string) {
+      const countservice = await this.prismaservice.serviceUsers.count({
+        where : {
+          id_user : id
+        },
+        orderBy : {
+          id : "desc"
+        },
+      });
+
+      return { data: countservice };
     }
   
     async getFind({ id }: { id: string }) {

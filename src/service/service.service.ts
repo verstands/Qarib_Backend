@@ -38,8 +38,11 @@ export class ServiceService {
       return { data: getid };
     }
 
-    async getServiceByUserAll() {
+    async getServiceByUserAll({ id }: { id: string }) {
       const getid = await this.prismaservice.serviceUsers.findMany({
+        where: {
+          id_user : id
+        },
         include : {
           user : true,
           service : true

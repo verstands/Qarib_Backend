@@ -25,9 +25,9 @@ export class ServiceController {
       });
     }
 
-    @Get('servicebyuserAll/servicebyuserAll')
+    @Get('servicebyuserAll/servicebyuserAll/:id')
     getServiceByUserAll(@Param('id') id: string) {
-      return this.allservice.getServiceByUserAll();
+      return this.allservice.getServiceByUserAll({id});
     }
   
     @Put(':id')

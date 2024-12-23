@@ -11,6 +11,7 @@ import {
 import { AgentService } from './agent.service';
 import { AgentInterface } from 'src/dto/agent.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { OtpAgentDto } from 'src/dto/otpagent';
 
 //@UseGuards(JwtAuthGuard)
 @Controller('agent')
@@ -42,6 +43,16 @@ export class AgentController {
   @Post()
   cretae(@Body() data: AgentInterface) {
     return this.agentService.create(data);
+  }
+
+  @Post('verification')
+  verify(@Body() data: AgentInterface) {
+    return this.agentService.verifyCount(data);
+  }
+
+  @Post('otp')
+  async create(@Body() data: OtpAgentDto) { 
+    return await this.agentService.Otpmail(data);
   }
 
 }

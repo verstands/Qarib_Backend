@@ -19,6 +19,16 @@ export class ServiceuserController {
     });
   }
 
+  @Get('count/:id')
+  getCuntService(@Param('id') id: string) {
+    return this.allservice.getCountAllService(id);
+  }
+
+  @Get('all/:id')
+  getAllService(@Param('id') id: string) {
+    return this.allservice.getAllUser(id);
+  }
+
   @Put(':id')
   update(@Param('id') id: string, @Body() agentUpdate: ServiceUsersDto) {
     return this.allservice.update({ id, ...agentUpdate });

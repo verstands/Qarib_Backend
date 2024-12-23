@@ -10,6 +10,7 @@ import { ProblemeModule } from './probleme/probleme.module';
 import { EvaluationModule } from './evaluation/evaluation.module';
 import { NotificationModule } from './notification/notification.module';
 import { VilleModule } from './ville/ville.module';
+import { MailModule } from './mail/mail.module';
 
 
 @Module({
@@ -24,7 +25,8 @@ import { VilleModule } from './ville/ville.module';
     ProblemeModule,
     EvaluationModule,
     NotificationModule,
-    VilleModule
+    VilleModule,
+    MailModule
   ],
 })
 export class AppModule {}

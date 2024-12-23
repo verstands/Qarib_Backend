@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import { Type } from 'class-transformer';
 export class AgentInterface {
   id?: string;
   @IsNotEmpty({
@@ -32,11 +33,13 @@ export class AgentInterface {
   @IsNotEmpty({
     message: 'Le champ role est obligatoire',
   })
+  @Type(() => Number) 
   latitude: number;
 
   @IsNotEmpty({
     message: 'Le champ role est obligatoire',
   })
+  @Type(() => Number) 
   longitude: number;
 
   @IsNotEmpty({
