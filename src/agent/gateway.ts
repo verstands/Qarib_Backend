@@ -20,7 +20,7 @@ export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleConnection(client: any) {
     console.log('Client connecté:', client.id);
   }
-
+ 
   handleDisconnect(client: any) {
     console.log('Client déconnecté:', client.id);
   }
