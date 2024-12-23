@@ -22,7 +22,7 @@ export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
  
   handleDisconnect(client: any) {
-    console.log('Client déconnecté:', client.id);
+    console.log('Client déconnecté:', client.id); 
   }
 
   @SubscribeMessage('updateLocation')
