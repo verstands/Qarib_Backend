@@ -29,6 +29,10 @@ export class FavoriService {
               where: {
                 id_user : id,
               },
+              include : {
+                user : true,
+                service : true
+              }
             });
             return { data: getid };
           }
