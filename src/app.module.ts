@@ -11,6 +11,7 @@ import { EvaluationModule } from './evaluation/evaluation.module';
 import { NotificationModule } from './notification/notification.module';
 import { VilleModule } from './ville/ville.module';
 import { MailModule } from './mail/mail.module';
+import { FavoriModule } from './favori/favori.module';
 
 
 @Module({
@@ -26,7 +27,8 @@ import { MailModule } from './mail/mail.module';
     EvaluationModule,
     NotificationModule,
     VilleModule,
-    MailModule
+    MailModule,
+    FavoriModule
   ],
 })
 export class AppModule {}
