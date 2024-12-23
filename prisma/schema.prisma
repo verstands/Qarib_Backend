@@ -28,6 +28,7 @@ model Agents {
   updated_at    DateTime        @updatedAt
   Images        Images[]
   ServiceUser   ServiceUsers[]
+  FavorieUsers FavorieUsers[]
   Logdata       Logdata[]
   Probleme      Problemes[]
   Evaluations   Evaluations[]
@@ -63,6 +64,7 @@ model Services {
   created_at  DateTime       @default(now())
   updated_at  DateTime       @updatedAt
   ServiceUser ServiceUsers[]
+  FavorieUsers FavorieUsers[]
 }
 
 model ServiceUsers {
@@ -127,4 +129,15 @@ model Notifications {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   user       Agents   @relation(fields: [id_sender], references: [id])
+}
+
+model FavorieUsers {
+  id         String   @id @default(cuid())
+  id_user    String
+  id_service String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user    Agents   @relation(fields: [id_user], references: [id])
+  service Services @relation(fields: [id_service], references: [id])
 }
