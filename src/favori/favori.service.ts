@@ -55,7 +55,7 @@ export class FavoriService {
         id,
       },
     });
-    return { message: 'image supprimé avec success ' };
+    return { message: 'service a été retiré dans votre favorie' };
   }
 
   async create(dataall: FavoriDto) {

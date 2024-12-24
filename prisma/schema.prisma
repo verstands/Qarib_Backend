@@ -141,3 +141,10 @@ model FavorieUsers {
   user    Agents   @relation(fields: [id_user], references: [id])
   service Services @relation(fields: [id_service], references: [id])
 }
+
+model Categories {
+  id         String   @id @default(cuid())
+  nom String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
