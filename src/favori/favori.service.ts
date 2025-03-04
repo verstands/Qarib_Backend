@@ -47,17 +47,24 @@ export class FavoriService {
       },
     });
     return updatedAgent;
-  }
+  } 
 
   async delete({ id }: { id: string }) {
-    await this.prismaservice.favorieUsers.delete({
-      where: {
-        id,
-      },
+    const favori = await this.prismaservice.favorieUsers.findUnique({
+      where: { id },
     });
-    return { message: 'service a été retiré dans votre favorie' };
+  
+    if (!favori) {
+      throw new HttpException("Le favori n'existe pas", HttpStatus.NOT_FOUND);
+    }
+   
+    await this.prismaservice.favorieUsers.delete({
+      where: { id },
+    });
+  
+    return { message: "Service retiré des favoris avec succès" };
   }
-
+  
   async create(dataall: FavoriDto) {
     const existingFavori = await this.prismaservice.favorieUsers.findFirst({
       where: {

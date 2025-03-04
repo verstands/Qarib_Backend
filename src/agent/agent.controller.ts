@@ -16,7 +16,7 @@ import { OtpAgentDto } from 'src/dto/otpagent';
 //@UseGuards(JwtAuthGuard)
 @Controller('agent')
 export class AgentController {
-  constructor(private readonly agentService: AgentService) {}
+  constructor(private readonly agentService: AgentService) { }
 
   @Get()
   getAgents() {
@@ -25,7 +25,7 @@ export class AgentController {
 
   @Get(':id')
   getAgent(@Param('id') id: string) {
-    return this.agentService.getAgent({ 
+    return this.agentService.getAgent({
       id,
     });
   }
@@ -51,8 +51,35 @@ export class AgentController {
   }
 
   @Post('otp')
-  async create(@Body() data: OtpAgentDto) { 
+  async create(@Body() data: OtpAgentDto) {
     return await this.agentService.Otpmail(data);
   }
+
+  @Get('positions/positions/:id')
+  async getUsersPosition(@Param('id') id: string) {
+    return await this.agentService.getUsersPosition({
+      id,
+    });
+  }
+
+  @Put('positions/positions/:id')
+  async updateAgentPosition(@Param('id') id: string, @Body() positionData: { latitude: string; longitude: string }) {
+    const { latitude, longitude } = positionData;
+    const updatedAgent = await this.agentService.updateUserPosition(id, latitude, longitude);
+    return {
+      agent: updatedAgent,
+    };
+  }
+  @Get('positions/positions/:id/:idservice')
+  async getUsersPositionService(
+    @Param('id') id: string,
+    @Param('idservice') idservice: string
+  ) {
+    return await this.agentService.getUsersPositionService({
+      id,
+      idservice, 
+    });
+  }
+
 
 }

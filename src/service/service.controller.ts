@@ -6,16 +6,16 @@ import { ServicesDto } from 'src/dto/service.dto';
 export class ServiceController {
     constructor(private readonly allservice: ServiceService) {}
 
-    @Get()
-    get() {
-      return this.allservice.getAll();
-    }
-  
     @Get(':id')
-    getFindOne(@Param('id') id: string) {
-      return this.allservice.getFind({
+    get(@Param('id') id: string) {
+      return this.allservice.getAll({
         id,
       });
+    }
+  
+    @Get('categorie/categorie')
+    getCatgorie() {
+      return this.allservice.getFind();
     }
 
     @Get('servicebyuser/:id')

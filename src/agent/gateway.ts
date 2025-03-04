@@ -14,29 +14,36 @@ export class UserGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
 
   constructor(
-    @Inject(forwardRef(() => AgentService)) private readonly agentService: AgentService, // Utilisez forwardRef ici
+    @Inject(forwardRef(() => AgentService)) private readonly agentService: AgentService, // Utilisation de forwardRef
   ) {}
 
   handleConnection(client: any) {
     console.log('Client connecté:', client.id);
   }
- 
+
   handleDisconnect(client: any) {
     console.log('Client déconnecté:', client.id);
   }
 
   @SubscribeMessage('updateLocation')
-  async handleLocationUpdate(client: any, payload: { userId: string; latitude: number; longitude: number }) {
+  async handleLocationUpdate(client: any, payload: { userId: string; latitude: string; longitude: string }) {
     console.log('Mise à jour de la localisation:', payload);
-    
-    // Appel à la méthode de mise à jour de la position
+
+    // Mise à jour de la position de l'agent
     await this.agentService.updateUserPosition(payload.userId, payload.latitude, payload.longitude);
-    
-    // Émettre l'événement à tous les clients connectés
-    this.server.emit('locationUpdate', payload);
+
+    // Récupérer **tous** les agents avec leurs services après mise à jour
+    const agentsWithServices = await this.agentService.getUsersPosition({ id: payload.userId });
+
+    // Diffuser la mise à jour des positions de tous les agents
+    this.server.emit('locationUpdate', agentsWithServices);
   }
 
-  async emitUserPositionChange(userId: string, latitude: number, longitude: number) {
-    this.server.emit('locationUpdate', { userId, latitude, longitude });
+  async emitUserPositionChange() {
+    // Récupérer **tous** les agents avec leurs services
+    const agentsWithServices = await this.agentService.getUsersPosition({ id: "" });
+
+    // Diffuser la mise à jour de tous les agents connectés
+    this.server.emit('locationUpdate', agentsWithServices);
   }
 }

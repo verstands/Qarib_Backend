@@ -14,4 +14,9 @@ export class ServicesDto {
     message: 'Le icon est obligatoire',
   })
   icon : string;
+
+  @IsNotEmpty({
+    message: 'Le icon est obligatoire',
+  })
+  idcat : string; 
 }

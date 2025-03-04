@@ -23,38 +23,116 @@ export class AgentService {
     });
     return { data: agents };
   }
+ 
 
 
-
-  async getUsersPostion() {
-    const agents = await this.prismaservice.agents.findMany({
-      select: {
-        id: true,
-        noms: true,
-        latitude: true,
-        longitude: true,
-      },
-    });
-
-    return agents.map(agent => ({
-      userId: agent.id.toString(),
-      latitude: agent.latitude,
-      longitude: agent.longitude,
-    }));
+  async getUsersPosition({ id }: { id: string }) {
+    try {
+      const agents = await this.prismaservice.agents.findMany({
+        where  : {
+          NOT : {
+            id :id,
+          },
+          statut :"1"
+        },
+        select: {
+          id: true,
+          noms: true,
+          latitude: true,
+          longitude: true,
+          ServiceUser: {
+            select: {
+              service: {
+                select: {
+                  id: true,
+                  titre: true,
+                },
+              },
+            },
+          },
+        },
+      });
+  
+      return agents
+        .filter(agent => agent.latitude !== null && agent.longitude !== null) // Vérifie que les coordonnées sont valides
+        .map(agent => ({
+          userId: agent.id.toString(),
+          latitude: agent.latitude,
+          longitude: agent.longitude,
+          nom: agent.noms,
+          services: agent.ServiceUser.map(serviceUser => ({
+            serviceId: serviceUser.service.id.toString(),
+            serviceName: serviceUser.service.titre,
+          })),
+        }));
+    } catch (error) {
+      console.error('Erreur lors de la récupération des positions des agents:', error);
+      throw new Error('Impossible de récupérer les positions des agents');
+    }
   }
 
+  async getUsersPositionService({ id, idservice }: { id: string, idservice: string }) {
+    try {
+      const agents = await this.prismaservice.serviceUsers.findMany({
+        where  : {
+         id_service : idservice,
+         user: {
+          NOT: {
+            id: id,
+          },
+          statut : "1"
+        },
+        },
+        include : {
+          user: {
+            select: {
+              id: true,
+              latitude: true,
+              longitude: true,
+              noms: true,
+            },
+          },
+          service: {
+            select: {
+              id: true,
+              titre: true,
+            },
+          },
+        }
+      });
+  
+      return agents
+      .filter(agent => agent.user?.latitude !== null && agent.user?.longitude !== null) // Vérifie que les coordonnées sont valides
+      .map(agent => ({
+        userId: agent.user.id.toString(),
+        latitude: agent.user.latitude,
+        longitude: agent.user.longitude,
+        nom: agent.user.noms,
+        services: [
+          {
+            serviceId: agent.service.id.toString(),
+            serviceName: agent.service.titre,
+          },
+        ],
+      }));
+    } catch (error) {
+      console.error('Erreur lors de la récupération des positions des agents:', error);
+      throw new Error('Impossible de récupérer les positions des agents');
+    }
+  }
+  
+  
+  
 
-  async updateUserPosition(userId: string, latitude: number, longitude: number) {
+  async updateUserPosition(userId: string, latitude: string, longitude: string) {
     const updatedAgent = await this.prismaservice.agents.update({
       where: { id: userId },
-      data: { latitude, longitude },
+      data: { latitude : latitude, longitude : longitude },
     });
-    
-    // Correction du nom de la méthode
-    this.userGateway.emitUserPositionChange(userId, latitude, longitude);
-    
-    return updatedAgent; // Retourner l'agent mis à jour
+    this.userGateway.emitUserPositionChange();
+    return updatedAgent; 
   }
+  
   
 
   async getAgent({ id }: { id: string }) {
@@ -93,8 +171,8 @@ export class AgentService {
   }
 
   async create(dataall: AgentInterface) {
-    dataall.latitude = Number(dataall.latitude);
-    dataall.longitude = Number(dataall.longitude);
+    dataall.latitude = dataall.latitude;
+    dataall.longitude = dataall.longitude;
     const existeEmail = await this.prismaservice.agents.findUnique({
       where: {
         email: dataall.email,
@@ -154,7 +232,8 @@ export class AgentService {
     // <p>L'équipe Qarib</p>
     // `
     // });
-    return { message: `code envoyé`, code: otp };
+    console.log('code', otp)
+    return { message: `code envoyé`, code: otp }; 
   }
 
 }

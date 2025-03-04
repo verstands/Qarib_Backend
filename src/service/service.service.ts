@@ -7,20 +7,22 @@ import { PrismaService } from 'src/prisma.service';
 export class ServiceService {
     constructor(private readonly prismaservice: PrismaService) {}
 
-    async getAll() {
+    async getAll({ id }: { id: string }) {
+      const where = id === "All" ? {} : { idcat: id };
+    
       const getall = await this.prismaservice.services.findMany({
-        orderBy : {
-          id : "desc"
+        where,
+        orderBy: {
+          id: "desc",
         },
       });
+    
       return { data: getall };
     }
+    
   
-    async getFind({ id }: { id: string }) {
-      const getid = await this.prismaservice.services.findUnique({
-        where: {
-          id,
-        },
+    async getFind() {
+      const getid = await this.prismaservice.categories.findMany({
       });
       return { data: getid };
     }

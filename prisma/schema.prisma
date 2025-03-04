@@ -21,8 +21,8 @@ model Agents {
   statut        String
   id_role       String
   id_ville      String
-  latitude      Float
-  longitude     Float
+  latitude      String
+  longitude     String
   email         String          @unique
   created_at    DateTime        @default(now())
   updated_at    DateTime        @updatedAt
@@ -61,10 +61,22 @@ model Services {
   titre       String
   description String
   icon        String
+  idcat        String
   created_at  DateTime       @default(now())
   updated_at  DateTime       @updatedAt
   ServiceUser ServiceUsers[]
   FavorieUsers FavorieUsers[]
+  cattegorie   Categories   @relation(fields: [idcat], references: [id])
+
+}
+
+model Categories {
+  id          String         @id @default(cuid())
+  titre       String
+  created_at  DateTime       @default(now())
+  updated_at  DateTime       @updatedAt
+  Services Services[]
+  
 }
 
 model ServiceUsers {
@@ -142,9 +154,3 @@ model FavorieUsers {
   service Services @relation(fields: [id_service], references: [id])
 }
 
-model Categories {
-  id         String   @id @default(cuid())
-  nom String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-}

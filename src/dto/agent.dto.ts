@@ -33,14 +33,13 @@ export class AgentInterface {
   @IsNotEmpty({
     message: 'Le champ role est obligatoire',
   })
-  @Type(() => Number) 
-  latitude: number;
+
+  latitude: string;
 
   @IsNotEmpty({
     message: 'Le champ role est obligatoire',
   })
-  @Type(() => Number) 
-  longitude: number;
+  longitude: string;
 
   @IsNotEmpty({
     message: 'Le champ ville est obligatoire',
