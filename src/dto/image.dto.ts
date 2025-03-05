@@ -1,17 +1,17 @@
 import { IsNotEmpty } from 'class-validator';
 export class ImageDto {
   @IsNotEmpty({
-    message: 'Le profil est obligatoire',
+    message: 'Le url est obligatoire',
   })
-  profil : string;
+  url : string;
 
   @IsNotEmpty({
-    message: 'Le  carte est obligatoire',
+    message: 'Le  status est obligatoire',
   })
-  carte : string;
+  status : string;
 
   @IsNotEmpty({
     message: 'user est obligatoire',
   })
   id_user : string;
-}
+} 

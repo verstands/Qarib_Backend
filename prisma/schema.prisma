@@ -28,11 +28,14 @@ model Agents {
   updated_at    DateTime        @updatedAt
   Images        Images[]
   ServiceUser   ServiceUsers[]
-  FavorieUsers FavorieUsers[]
+  FavorieUsers  FavorieUsers[]
   Logdata       Logdata[]
   Probleme      Problemes[]
   Evaluations   Evaluations[]
   Notifications Notifications[]
+  Descriptions  Descriptions[]
+  user          Demandes[]      @relation("user")
+  prestataire    Demandes[]      @relation("prestataire")
 
   ville Villes @relation(fields: [id_ville], references: [id])
   role  Roles  @relation(fields: [id_role], references: [id])
@@ -48,35 +51,54 @@ model Roles {
 
 model Images {
   id         String   @id @default(cuid())
-  profil     String
-  carte      String
+  url        String
   id_user    String
+  status     String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user       Agents   @relation(fields: [id_user], references: [id])
+}
+
+model Demandes {
+  id          String   @id @default(cuid())
+  user        String
+  prestataire String
+  status      String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  users       Agents   @relation("user", fields: [user], references: [id])
+  prestatires Agents   @relation("prestataire", fields: [prestataire], references: [id])
+}
+
+model Descriptions {
+  id         String   @id @default(cuid())
+  id_user    String
+  message    String   @db.Text()
+  status     String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   user       Agents   @relation(fields: [id_user], references: [id])
 }
 
 model Services {
-  id          String         @id @default(cuid())
-  titre       String
-  description String
-  icon        String
+  id           String         @id @default(cuid())
+  titre        String
+  description  String
+  icon         String
   idcat        String
-  created_at  DateTime       @default(now())
-  updated_at  DateTime       @updatedAt
-  ServiceUser ServiceUsers[]
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  ServiceUser  ServiceUsers[]
   FavorieUsers FavorieUsers[]
-  cattegorie   Categories   @relation(fields: [idcat], references: [id])
-
+  cattegorie   Categories     @relation(fields: [idcat], references: [id])
 }
 
 model Categories {
-  id          String         @id @default(cuid())
-  titre       String
-  created_at  DateTime       @default(now())
-  updated_at  DateTime       @updatedAt
-  Services Services[]
-  
+  id         String     @id @default(cuid())
+  titre      String
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  Services   Services[]
 }
 
 model ServiceUsers {
@@ -153,4 +175,3 @@ model FavorieUsers {
   user    Agents   @relation(fields: [id_user], references: [id])
   service Services @relation(fields: [id_service], references: [id])
 }
-
