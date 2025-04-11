@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ServiceUsersDto } from 'src/dto/serviceuser.dto';
 import { PrismaService } from 'src/prisma.service';
@@ -71,6 +71,15 @@ export class ServiceuserService {
     }
   
     async create(dataall: ServiceUsersDto) {
+      const verify = await this.prismaservice.serviceUsers.findFirst({
+        where : {
+          id_service : dataall.id_service,
+          id_user : dataall.id_user
+        }
+      })
+      if(verify){
+        throw new HttpException("Cette service existe déjà", HttpStatus.CONFLICT);
+      }
       const createAgent = await this.prismaservice.serviceUsers.create({
         data:  dataall
       });

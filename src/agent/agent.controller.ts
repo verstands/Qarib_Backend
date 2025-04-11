@@ -81,5 +81,14 @@ export class AgentController {
     });
   }
 
+  @Get('online-status/online-status/:id/:status')
+  async updateOnlineStatus(
+    @Param('id') id: string,
+    @Param('status') status: string,
+    
+  ) {
+    return this.agentService.updateOnlineStatus({id, status});
+  }
+
 
 }

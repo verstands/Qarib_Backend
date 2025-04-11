@@ -28,7 +28,7 @@ import { FavoriModule } from './favori/favori.module';
     NotificationModule,
     VilleModule,
     MailModule,
-    FavoriModule
+    FavoriModule,
   ],
 })
 export class AppModule {}

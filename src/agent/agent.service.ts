@@ -27,6 +27,7 @@ export class AgentService {
 
 
   async getUsersPosition({ id }: { id: string }) {
+    const baseUrl = 'http://185.182.186.58:4005/uploads';
     try {
       const agents = await this.prismaservice.agents.findMany({
         where  : {
@@ -50,6 +51,16 @@ export class AgentService {
               },
             },
           },
+          Images : {
+            select : {
+              url : true
+            }
+          },
+          Descriptions : {
+            select : {
+              message : true
+            }
+          }
         },
       });
   
@@ -63,6 +74,12 @@ export class AgentService {
           services: agent.ServiceUser.map(serviceUser => ({
             serviceId: serviceUser.service.id.toString(),
             serviceName: serviceUser.service.titre,
+          })),
+          photos: agent.Images.slice(1).map(serviceUser => ({
+            imageUrl: `${baseUrl}/${serviceUser.url}`,
+          })),
+          des: agent.Descriptions.map(serviceUser => ({
+            DesMessage: `${serviceUser.message}`,
           })),
         }));
     } catch (error) {
@@ -91,6 +108,18 @@ export class AgentService {
               longitude: true,
               noms: true,
             },
+            include : {
+              Images : {
+                select : {
+                  url : true
+                }
+              },
+              Descriptions : {
+                select : {
+                  message : true
+                }
+              }
+            }
           },
           service: {
             select: {
@@ -98,6 +127,7 @@ export class AgentService {
               titre: true,
             },
           },
+          
         }
       });
   
@@ -114,6 +144,20 @@ export class AgentService {
             serviceName: agent.service.titre,
           },
         ],
+        photos: [
+          {
+            imageUrl : agent.user.Images.map(e =>  {
+              e.url
+            })
+          }
+        ],
+        des: [
+          {
+            DesMessage : agent.user.Descriptions.map(e =>  {
+              e.message
+            })
+          }
+        ]
       }));
     } catch (error) {
       console.error('Erreur lors de la récupération des positions des agents:', error);
@@ -128,6 +172,15 @@ export class AgentService {
     const updatedAgent = await this.prismaservice.agents.update({
       where: { id: userId },
       data: { latitude : latitude, longitude : longitude },
+    });
+    this.userGateway.emitUserPositionChange();
+    return updatedAgent; 
+  }
+
+  async updateOnlineStatus({id, status } : {id: string, status: string}) {
+    const updatedAgent = await this.prismaservice.agents.update({
+      where: { id: id },
+      data: { statut : status },
     });
     this.userGateway.emitUserPositionChange();
     return updatedAgent; 
@@ -185,7 +238,7 @@ export class AgentService {
     const createAgent = await this.prismaservice.agents.create({
       data: {
         ...dataall,
-        password: hashedPassword,
+        password: hashedPassword, 
       },
     });
 

@@ -32,13 +32,27 @@ model Agents {
   Logdata       Logdata[]
   Probleme      Problemes[]
   Evaluations   Evaluations[]
-  Notifications Notifications[]
   Descriptions  Descriptions[]
   user          Demandes[]      @relation("user")
   prestataire    Demandes[]      @relation("prestataire")
+  send_notification    Notifications[]      @relation("send_notification")
+  recev_notification    Notifications[]      @relation("recev_notification")
 
   ville Villes @relation(fields: [id_ville], references: [id])
   role  Roles  @relation(fields: [id_role], references: [id])
+}
+
+model Notifications {
+  id         String   @id @default(cuid())
+  send_notification  String
+  recev_notification String
+  titre String
+  message String
+  status      String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  sendnotification       Agents   @relation("send_notification", fields: [send_notification], references: [id])
+  recevnotification Agents   @relation("recev_notification", fields: [recev_notification], references: [id])
 }
 
 model Roles {
@@ -153,16 +167,6 @@ model Evaluations {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   user       Agents   @relation(fields: [id_user], references: [id])
-}
-
-model Notifications {
-  id         String   @id @default(cuid())
-  id_recever String
-  id_sender  String
-  message    String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  user       Agents   @relation(fields: [id_sender], references: [id])
 }
 
 model FavorieUsers {
