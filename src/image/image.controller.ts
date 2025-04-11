@@ -95,7 +95,7 @@ export class ImageController {
           const fileExtName = extname(file.originalname);
           const fileName = `${file.fieldname}-${uniqueSuffix}${fileExtName}`;
           callback(null, fileName);
-        },
+        }, 
       }),
     }),
   )
