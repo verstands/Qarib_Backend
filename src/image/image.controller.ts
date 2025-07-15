@@ -70,7 +70,7 @@ export class ImageController {
   )
   async createAgenda(
     @Body() pieceJointDto: ImageDto,
-    @UploadedFiles() files: Express.Multer.File[], // Assure-toi que le type est correct ici
+    @UploadedFiles() files: Express.Multer.File[], 
   ) {
     console.log('📝 Données reçues:', pieceJointDto);
     console.log('📸 Fichiers reçus:', files);
